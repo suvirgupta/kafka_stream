@@ -12,3 +12,5 @@ tweetpath = 'hdfs://quickstart.cloudera:8020/user/cloudera/spark_sql/cache-10000
 twittertable = sqlc.read.json(tweetpath)
 twittertable.registerTempTable("twittertable")
 print sqlc.sql("select text, user.screen_name from twittertable where user.screen_name = 'realDonaldTrump' limit 10").collect()
+
+
