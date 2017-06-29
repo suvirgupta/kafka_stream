@@ -16,8 +16,15 @@
 #     row[10] = float(row[10])
 #     return Flights(*row[:11])
 #
-#
-#
+
+
+####### common spark properties to set  #################
+#  setMaster, setAppname,
+#  set(<properties name>, values)
+#  properties name : spark.app.name, spark.driver.core,spark.driver.maxResultSize, spark.driver.memory, spark.executor.memory
+#  spark.extraListeners, spark.local.dir,spark.logConf, spark.master
+##########################################################################################################################################
+
 import os
 os.environ['SPARK_HOME']= '/usr/lib/spark'
 from pyspark import SparkContext, SparkConf
