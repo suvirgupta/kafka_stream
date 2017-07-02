@@ -41,6 +41,11 @@ sqlc.setConf("spark.sql.avro.compression.codec","snappy")
 #########################################################################################################################################################
 ## convert from avro to dataframe
 df1 = sqlc.read.format("com.databricks.spark.avro").load("/user/cloudera/ebay/ebay")
+
+## Reading directly from jdbc connection
+df = sqlc.read.format('jdbc').options(url='jdbc:mysql://localhost/sparktrain', dbtable='ebay').load()
+
+
 ## register table to implement sql operations
 df1.registerTempTable("ebay")
 sqlc.sql("select count(*) from ebay group by auctionid").show()
@@ -114,3 +119,19 @@ df3.select("auctionid", "price").filter(df3.price>100).show()
 
 df3.select("auctionid", "price").filter(df3.price>100).sort("price", ascending=False).show()
 
+## writes by default to user direstory in ourcase to "hdfs://quickstart.cloudera:8020/user/cloudera/ebayselect.parquet"
+df3.select("auctionid", "price").write.save("ebayselect.parquet", format= "parquet")
+
+## write to specified location give the full path
+df3.select("auctionid", "price").write.save("hdfs://quickstart.cloudera:8020/user/ebayselect.parquet", format= "parquet")
+
+
+#
+# Save Modes
+# Save operations can optionally take a SaveMode, that specifies how to handle existing data if present. It is important to realize that these save modes do not utilize any locking and are not atomic. Additionally, when performing a Overwrite, the data will be deleted before writing out the new data.
+#
+# Scala/Java	Any Language	Meaning
+# SaveMode.ErrorIfExists (default)	"error" (default)	When saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown.
+# SaveMode.Append	"append"	When saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.
+# SaveMode.Overwrite	"overwrite"	Overwrite mode means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.
+# SaveMode.Ignore	"ignore"	Ignore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data. This is similar to a CREATE TABLE IF NOT EXISTS in SQL.
