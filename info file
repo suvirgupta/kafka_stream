@@ -1,0 +1,114 @@
+Cloudera 5.8
+## Start zookeeper server
+sudo service zookeeper-server start
+## Start Kafka server
+sudo service kafka-server start
+## if one cannot fine the properties file in the cloudera distribution at the specified location use “Locate ”command to find the directory
+## set zookeeper properties (Currently no changes made )
+usr/lib/kafka/bin/zookeeper-server-start.sh /usr/lib/whirr/recipes/zookeeper.properties
+# /usr/bin/zookeeper-server-start.sh config/zookeeper.properties
+## Set server properties of the kafka server and will run the server
+## run the server on the different terminals
+/usr/lib/kafka/bin/kafka-server-start.sh /etc/kafka/conf/server.properties
+## change listener port for the local host so that one knows on which port the producer is producing plain text
+listeners=PLAINTEXT://:9092
+## for multiple cluster server can add more server properties
+cp /etc/kafka/conf/server.properties  /etc/kafka/conf/server-1.properties
+cp /etc/kafka/conf/server.properties  /etc/kafka/conf/server-2.properties
+
+set different broker id as initially it was 0 so set it to be 1 and 2 as shown below
+set a different port for the listener and kafka log directory
+config/server-1.properties:
+    broker.id=1
+    listeners=PLAINTEXT://:9093
+    log.dir=/tmp/kafka-logs-1
+
+config/server-2.properties:
+    broker.id=2
+    listeners=PLAINTEXT://:9094
+    log.dir=/tmp/kafka-logs-2
+
+/usr/bin/kafka-topics --zookeeper localhost:2181 –list
+## Create kafka topics
+## replication faction should be equal to the no of server properties file created or the brokers ids created 3 in our case
+## give topic name to the topic created
+
+/usr/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 1 –topicname
+## to check the zookeeper server working
+netstat -anlp | grep 2181
+
+## start producer on  separate terminals
+/usr/bin/kafka-console-producer --broker-list localhost:9092 --topic topicname
+## type message to seen by the consumer
+This is an new message
+/usr/bin/kafka-console-producer --broker-list localhost:9093 --topic topicname
+/usr/bin/kafka-console-producer --broker-list localhost:9094 --topic topicname
+
+## start consumer on the separate terminal and ther message typed in the producer will be visible in the consumer
+/usr/bin/kafka-console-consumer --zookeeper localhost:2181 --topic topicname
+
+
+
+#####################################################################################
+
+## Set up pycharm IDE
+Download pycharm community addition
+# extract pycharm .tar.gz file
+sudo tar -xzvf pycharm-community-2017.1.3.tar.gz
+# copy pycharm launcher link to usr lib for easy launch fro terminal
+sudo ln -s /home/cloudera/lib/pycharm/pycharm-community-2017.1.3/bin/pycharm.sh /usr/bin/pycharm
+
+##Install Pip
+# Before installing pip, we need to get its only external dependency - setuptools.
+#From the article on virtualenv and pip:
+#It [setuptools] builds on the (standard) functionality of Python's distribution utilities #toolset called distutils. Given that distils is provided by default, all we need left is #setuptools.
+# Let's download the installation file using wget:
+wget --no-check-certificate https://pypi.python.org/packages/source/s/setuptools/setuptools-1.4.2.tar.gz
+
+# Extract the files from the archive:
+tar -xvf setuptools-1.4.2.tar.gz
+
+# Enter the extracted directory:
+cd setuptools-1.4.2
+
+# Install setuptools using the Python we've installed (2.6)
+python2.6 setup.py install
+## to install pip get-pip.py code
+wget  https://bootstrap.pypa.io/get-pip.py
+
+## run get-pip.py script on python 2.6
+sudo python2.6 get-pip.py
+
+
+Most of the time the Unix and the other RHEL system has outdated version of the git so one has to update it to link github repository to the pycharm Ide
+Update git on centos os
+Follow below tutorial but be for doing any changes first remove the previous version of git
+##Command to remive current version of the git
+Sudo yum remove git-all git
+## install a new version of the git
+https://tecadmin.net/install-git-2-x-on-centos-rhel-and-fedora/
+
+Step 1 – Install Required Packages
+Before installing Git from source code, make sure you have already installed required packages on your system. If not use the following command to install required packages.
+# yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+# yum install gcc perl-ExtUtils-MakeMaker
+Step 2 – Download and Install Git
+Download latest Git source code from kernel git or simply use following command to download Git 2.8.11.
+You can get the version from other website by surfing the web
+# cd /usr/src
+# wget https://www.kernel.org/pub/software/scm/git/git-2.8.11.tar.gz
+# tar xzf git-2.8.11.tar.gz
+After downloading and extracting Git source code, Use the following command to compile the source code.
+# cd git-2.8.11
+# make prefix=/usr/local/git all
+# make prefix=/usr/local/git install
+Step 3 – Setup Environment
+After installation of git client. Now you must need to set binary in system environment. So edit /etc/bashrc file and add below content to it
+ export PATH=$PATH:/usr/local/git/bin
+Now execute below command to reload configuration in current environment.
+# source /etc/bashrc
+After completing above steps. Let’s use following command to check current git version.
+# git --version
+
+git version 2.8.11
+

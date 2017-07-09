@@ -42,6 +42,12 @@ sqlc.setConf("spark.sql.avro.compression.codec","snappy")
 ## convert from avro to dataframe
 df1 = sqlc.read.format("com.databricks.spark.avro").load("/user/cloudera/ebay/ebay")
 
+### reading xml schema is similar to other schema
+# SPARK_HOME/bin/pyspark --packages com.databricks:spark-xml_2.10:0.3.3  ## define package only supports on spark 1.6
+## any upgraded packages does not support on the spark vrsion of 1.6 so one has to set the given package fo format to work
+
+df4 = sqlc.read.format("com.databricks.spark.xml").option("rowTag","<root row tag name usually the name of the file>").load("<path of the xml file >")
+
 ## Reading directly from jdbc connection
 df = sqlc.read.format('jdbc').options(url='jdbc:mysql://localhost/sparktrain', dbtable='ebay').load()
 
