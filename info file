@@ -16,8 +16,8 @@ listeners=PLAINTEXT://:9092
 cp /etc/kafka/conf/server.properties  /etc/kafka/conf/server-1.properties
 cp /etc/kafka/conf/server.properties  /etc/kafka/conf/server-2.properties
 
-set different broker id as initially it was 0 so set it to be 1 and 2 as shown below
-set a different port for the listener and kafka log directory
+#set different broker id as initially it was 0 so set it to be 1 and 2 as shown below
+#set a different port for the listener and kafka log directory
 config/server-1.properties:
     broker.id=1
     listeners=PLAINTEXT://:9093
@@ -40,14 +40,12 @@ netstat -anlp | grep 2181
 ## start producer on  separate terminals
 /usr/bin/kafka-console-producer --broker-list localhost:9092 --topic topicname
 ## type message to seen by the consumer
-This is an new message
+##This is an new message
 /usr/bin/kafka-console-producer --broker-list localhost:9093 --topic topicname
 /usr/bin/kafka-console-producer --broker-list localhost:9094 --topic topicname
 
 ## start consumer on the separate terminal and ther message typed in the producer will be visible in the consumer
 /usr/bin/kafka-console-consumer --zookeeper localhost:2181 --topic topicname
-
-
 
 #####################################################################################
 

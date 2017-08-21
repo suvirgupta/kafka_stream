@@ -5,16 +5,17 @@ from kafka.consumer import SimpleConsumer
 from kafka.producer import SimpleProducer
 import string
 
+
 ######################################################################
 # Authentication details. To  obtain these visit dev.twitter.com
 ######################################################################
 
-consumer_key = '<key>'  # eWkgf0izE2qtN8Ftk5yrVpaaJ
-consumer_secret = '<secret>'  # BYYnkSEDx463mGzIxjSifxfXN6V1ggpfJaGBKlhRpUMuQ02lBE
-access_token = '<token>'  # 1355650081-Mq5jok7mbcrIbTpqZPcMHgWjcymqSrG1kVaut40
-access_token_secret = '<token secret>'  # QovqxQnw0hSPrKwFIYLWct3Zv4MeGMash66IaOoFyXNWs
+consumer_key = 'BnmwonLefknDZ3jTaJzKJdQa3'  # eWkgf0izE2qtN8Ftk5yrVpaaJ
+consumer_secret = 'ZgY5zWER3z4YoASXNdgDAUGcUKosBm6BFbKpVpCdyCVJJSThzV'  # BYYnkSEDx463mGzIxjSifxfXN6V1ggpfJaGBKlhRpUMuQ02lBE
+access_token = '819272523246399490-2lWcTACsY4EEbBTI4f1AwYYGF9fAiOE'  # 1355650081-Mq5jok7mbcrIbTpqZPcMHgWjcymqSrG1kVaut40
+access_token_secret = 'UgxScNWNmIRsujTbsbehAeBOOKg8vmUidsMLvCzWLEJdE'  # QovqxQnw0hSPrKwFIYLWct3Zv4MeGMash66IaOoFyXNWs
 
-mytopic = 'dna'
+mytopic = 'rna'
 
 
 ######################################################################
@@ -32,12 +33,12 @@ class StdOutListener(tweepy.StreamListener):
     def on_status(self, status):
 
         # Prints the text of the tweet
-        # print '%d,%d,%d,%s,%s' % (status.user.followers_count, status.user.friends_count,status.user.statuses_count, status.user.id_str, status.user.screen_name)
-
+        print '%d,%d,%d,%s,%s' % (status.user.followers_count, status.user.friends_count,status.user.statuses_count, status.user.id_str, status.user.screen_name)
+        #print '%s' %(status.user.screen_name)
         # Schema changed to add the tweet text
-        print '%d,%d,%d,%s,%s' % (
-        status.user.followers_count, status.user.friends_count, status.user.statuses_count, status.text,
-        status.user.screen_name)
+        # print '%d,%d,%d,%s,%s' % (
+        # status.user.followers_count, status.user.friends_count, status.user.statuses_count, status.text,
+        # status.user.screen_name)
         message = status.text + ',' + status.user.screen_name
         msg = filter(lambda x: x in string.printable, message)
         try:
@@ -85,10 +86,15 @@ if __name__ == '__main__':
     ######################################################################
     # Sample dilivers a stream of 1% (random selection) of all tweets
     ######################################################################
-    client = SimpleClient("localhost:9092")
+    client = SimpleClient("localhost:9093")
     producer = SimpleProducer(client)
 
+
     stream.sample()
+
+    # kafkastream =  KafkaUtils.(ssc, 'localhost:2181', {'rna':1})
+    # kafkastream.map(lambda x : x.split('\n')).pprint()
+    #print kafkastream.map(lambda x : x.split('\n')).pprint()
     ######################################################################
     # Custom Filter rules pull all traffic for those filters in real time.
     # Bellow are some examples add or remove as needed...
